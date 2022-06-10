@@ -39,7 +39,49 @@ async function getRecipeDetails(recipe_id) {
 
 
 
+/**
+ * Get recipes list from spooncular response 
+ * @param {*} recipes_info
+ */
+
+async function getRecipesComplexSearch(input_query,input_number) {
+    return await axios.get(`${api_domain}/complexSearch`, {
+        params: {
+            query: input_query,
+            number: input_number,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
+/**
+ * https://spoonacular.com/food-api/docs#Search-Recipes-Complex
+ * Search through hundreds of thousands of recipes using advanced filtering and ranking. NOTE: This method combines searching by query, by ingredients, and by nutrients into one endpoint.
+ * input:
+ *  query- type:string	example:pasta	Description: The (natural language) recipe search query.
+ * NUBMER- TYPE:number	EXAMPLE:10	Description:The number of expected results (between 1 and 100).
+ */
+
+
+async function getRecipesByQuery(query,NumberOfResults) {
+    let recipe_info = await getRecipesComplexSearch(query,NumberOfResults);
+    let { offset, number, results ,totalResults} = recipe_info.data;
+
+    return {
+        offset : offset,
+        number : number,
+        results : results,
+        totalResults : totalResults,
+        
+    }
+}
+
+
+
+
 exports.getRecipeDetails = getRecipeDetails;
+exports.getRecipesByQuery = getRecipesByQuery;
 
 
 
