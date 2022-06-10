@@ -3,10 +3,9 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
-const home_utils = require("./utils/home_utils")
+const home_utils = require("./utils/mainPage_utils")
 
 
-router.get("/", (req, res) => res.send("im home"));
 
 // return three random recipes
 router.get("/", async (req, res, next) => {
@@ -18,5 +17,6 @@ router.get("/", async (req, res, next) => {
       }
 });
 
+router.get("/", (req, res) => res.send("im home"));
 
   module.exports = router;
