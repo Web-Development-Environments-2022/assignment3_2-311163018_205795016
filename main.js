@@ -56,6 +56,7 @@ var port = process.env.PORT || 3000; //local=3000 remote=80
 const user = require("./routes/user");
 const recipes = require("./routes/recipes");
 const auth = require("./routes/auth");
+const home = require("./routes/home");
 
 
 //#region cookie middleware
@@ -76,12 +77,14 @@ app.use(function (req, res, next) {
 //#endregion
 
 // ----> For cheking that our server is alive
-app.get("/alive", (req, res) => res.send("I'm alive"));
+app.get("/alive", (req, res) => res.send("I'm alive!!!!!"));
+//app.get("/", (req, res) => res.send("I'm home"));
 
 // Routings
 app.use("/users", user);
 app.use("/recipes", recipes);
 app.use(auth);
+app.use("/home", home)
 
 // Default router
 app.use(function (err, req, res, next) {
