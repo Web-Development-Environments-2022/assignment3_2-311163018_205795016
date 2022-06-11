@@ -161,8 +161,8 @@ async function getRecipesPreview(recipes_id_arr,keyToSort) {
     if (keyToSort == "readyInMinutes"){
         try {
             final_recipes_preview_array.sort(function(a,b) {
-                var keyA = a.readyInMinutes,
-                 keyB = b.readyInMinutes;
+                var keyA = a.readyInMinutes;
+                var keyB = b.readyInMinutes;
               // Compare the 2 dates
               if (keyA < keyB) return -1;
               if (keyA > keyB) return 1;
