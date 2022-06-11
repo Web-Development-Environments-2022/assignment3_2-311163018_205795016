@@ -78,10 +78,37 @@ async function getRecipesByQuery(query,NumberOfResults) {
 }
 
 
+/**
+ * but what about family recipes??? getRecipeInformation search only in spoonacular
+ * @param {*} recipes_id_arr 
+ */
+async function getRecipesPreview(recipes_id_arr) {
+    let number_of_recipes = recipes_id_arr.length;
+    let recipes_preview_array = [];
+    for (let i=0; i <number_of_recipes; i++) {
+        recipe_info = await getRecipeInformation(recipes_id_arr[i]);
+        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
+        //not sure if we want to add recipe ID, or maybe its need to be client problem ?
+        recipes_preview_array.push({
+            id: id,
+            title: title,
+            readyInMinutes: readyInMinutes,
+            image: image,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+            
+        })
+    }
+    return recipes_preview_array;
+
+}
 
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRecipesByQuery = getRecipesByQuery;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 

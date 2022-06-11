@@ -23,6 +23,8 @@ router.use(async function (req, res, next) {
 
 /**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
+ * 
+ * @todo update our API - move this from recipe to uset(on our API!!!)
  */
 router.post('/favorites', async (req,res,next) => {
   try{
@@ -37,11 +39,14 @@ router.post('/favorites', async (req,res,next) => {
 
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
+ * 
+ * 
+ * @todo update our API - move this from recipe to uset(on our API!!!)
  */
 router.get('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    let favorite_recipes = {};
+    let favorite_recipes = {};//that from the template - but I think its an error because nobody use this var
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
@@ -56,11 +61,14 @@ router.get('/favorites', async (req,res,next) => {
 
 /**
  * This path returns the "My recipes" that were saved by the logged-in user
+ * 
+ * 
+ * @todo update our API - move this from recipe to user(on our API!!!)
  */
  router.get('/myrecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    let my_recipes = {};
+    let my_recipes = {};/**@todo that from the template - but I think its an error because nobody use this var*/
     const recipes_id = await user_utils.getUserMyRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
@@ -73,6 +81,9 @@ router.get('/favorites', async (req,res,next) => {
 
 /**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
+ * 
+ * 
+ * @todo update our API - move this from recipe to user(on our API!!!)
  */
  router.post('/myrecipes', async (req,res,next) => {
   try{
