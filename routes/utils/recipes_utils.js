@@ -18,12 +18,50 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function getRecipeInformationBulk(recipes_id) {
+    return await axios.get(`${api_domain}/informationBulk`, {
+        params: {
+            ids: recipes_id,
+            includeNutrition: false,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
 
 
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
-
+    try{
+        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree,instructions } = recipe_info.data;
+        return {
+            id: id,
+            title: title,
+            readyInMinutes: readyInMinutes,
+            image: image,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+            instructions: instructions,
+            
+        }
+    } catch {
+        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
+        return {
+            id: id,
+            title: title,
+            readyInMinutes: readyInMinutes,
+            image: image,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+         
+        }
+    }
     return {
         id: id,
         title: title,
@@ -82,14 +120,19 @@ async function getRecipesByQuery(query,NumberOfResults) {
  * but what about family recipes??? getRecipeInformation search only in spoonacular
  * @param {*} recipes_id_arr 
  */
-async function getRecipesPreview(recipes_id_arr) {
-    let number_of_recipes = recipes_id_arr.length;
+async function getRecipesPreview(recipes_id_arr,keyToSort) {
+    // let number_of_recipes = recipes_id_arr.length;
     let recipes_preview_array = [];
-    for (let i=0; i <number_of_recipes; i++) {
-        recipe_info = await getRecipeInformation(recipes_id_arr[i]);
-        let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
-        //not sure if we want to add recipe ID, or maybe its need to be client problem ?
-        recipes_preview_array.push({
+    let recipe_info = await getRecipeInformationBulk(recipes_id_arr);
+    recipes_preview_array = recipe_info.data;
+    final_recipes_preview_array =[];
+    let number_of_recipes = recipes_preview_array.length;
+    for (let i=0;i<number_of_recipes; i++) {
+        // let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
+            //not sure if we want to add recipe ID, or maybe its need to be client problem ?
+        try{
+            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree,instructions } = recipes_preview_array[i];
+            final_recipes_preview_array.push({
             id: id,
             title: title,
             readyInMinutes: readyInMinutes,
@@ -98,10 +141,56 @@ async function getRecipesPreview(recipes_id_arr) {
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
-            
+            instructions: instructions,
         })
+        } catch {
+            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
+            final_recipes_preview_array.push({
+                id: id,
+                title: title,
+                readyInMinutes: readyInMinutes,
+                image: image,
+                popularity: aggregateLikes,
+                vegan: vegan,
+                vegetarian: vegetarian,
+                glutenFree: glutenFree,
+            })
+        }
+
     }
-    return recipes_preview_array;
+    if (keyToSort == "readyInMinutes"){
+        try {
+            final_recipes_preview_array.sort(function(a,b) {
+                var keyA = a.readyInMinutes,
+                 keyB = b.readyInMinutes;
+              // Compare the 2 dates
+              if (keyA < keyB) return -1;
+              if (keyA > keyB) return 1;
+              return 0;
+            })
+        } catch {
+            console.log("sort by readyInMinutes Failed - return unsorted list of recipes")
+            return final_recipes_preview_array;
+        }
+    } else {
+        try {
+            final_recipes_preview_array.sort(function(a,b) {
+                var keyA = a.popularity;
+                var keyB = b.popularity;
+                if (keyA < keyB) {
+                 return -1;
+                }    
+                if (keyA > keyB) {
+                    return 1;
+                }
+                return 0;
+            })
+        } catch {
+            console.log("sort by popularity Failed - return unsorted list of recipes")
+            return final_recipes_preview_array;
+        }        
+    }
+    return final_recipes_preview_array;
 
 }
 

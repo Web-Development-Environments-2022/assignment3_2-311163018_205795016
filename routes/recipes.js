@@ -158,12 +158,25 @@ router.post("/createrecipe/:recipe_pic-:recipe_name-:time_of_preparation-:vegan-
         "glutenFree": true
     }
 ]
+
+
+
+
+
+
+
+* soryBy can be popularity,readyInMinutes or nothing !!!
  */
-router.get('/recipes_preview/:recipes_ids_separated_by_comma', async(req,res,next) => {
+router.get('/recipes_preview/:recipes_ids_separated_by_comma-:sortBy', async(req,res,next) => {
   try{
-    let str = req.params.recipes_ids_separated_by_comma;
-    const ids_arr = str.split(/[,]+/);
-    const results = await recipes_utils.getRecipesPreview(ids_arr);
+    // let str = req.params.recipes_ids_separated_by_comma;
+    // const ids_arr = str.split(/[,]+/);
+    const ids_arr = req.params.recipes_ids_separated_by_comma;
+    const sortByKey = req.params.sortBy
+    if (sortByKey.length==0) {
+      sortByKey = false;
+    }
+    const results = await recipes_utils.getRecipesPreview(ids_arr,sortByKey);
     res.status(200).send(results);
   } catch(error){
     next(error);
