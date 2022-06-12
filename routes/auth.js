@@ -20,17 +20,17 @@ router.post("/Register", async (req, res, next) => {
       email: req.body.email
       //profilePic: req.body.profilePic
     }
-    console.log(req.body.username)
-    console.log(req.body.first_name)
-    console.log(req.body.last_name)
-    console.log(req.body.country)
-    console.log(req.body.password)
-    console.log(req.body.email)
+    // console.log(req.body.username)
+    // console.log(req.body.first_name)
+    // console.log(req.body.last_name)
+    // console.log(req.body.country)
+    // console.log(req.body.password)
+    // console.log(req.body.email)
 
 
     //let users = [];
-    const users = await DButils.execQuery("SELECT username FROM users");
-    console.log(users)
+    const users = await DButils.execQuery("SELECT usersname FROM users");
+    //console.log(users)
     if (users.find((x) => x.username == user_details.username))
       throw { status: 409, message: "Username taken" };
 
