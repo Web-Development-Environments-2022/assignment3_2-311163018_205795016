@@ -78,7 +78,7 @@ router.post("/createrecipe", async (req,res,next) => {
       throw { status: 409, message: "id is taken" };
 
     await DButils.execQuery(
-      `INSERT INTO newrecipes VALUES ('${user_id}','${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
+      `INSERT INTO newrecipes VALUES ('${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
       '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}')`
     );
     await DButils.execQuery(
