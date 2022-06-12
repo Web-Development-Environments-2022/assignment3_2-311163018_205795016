@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
+const DButils = require("../routes/utils/DButils");
+
 
 router.get("/", (req, res) => res.send("im here"));
 
@@ -47,7 +49,7 @@ router.get("/:recipeId", async (req, res, next) => {
   "number of dishes": 4
 }
  */
-router.post("/createrecipe/:recipe_pic-:recipe_name-:time_of_preparation-:vegan-:vagetarian-:gluten_free-:product_list_and_quantities-:recipe_instructions-:number_of_dishes", async (req,res,next) => {
+router.post("/createrecipe", async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     /**
@@ -57,7 +59,29 @@ router.post("/createrecipe/:recipe_pic-:recipe_name-:time_of_preparation-:vegan-
     // await user_utils.createRecipe(req.params.recipe_pic,req.params.recipe_name,req.params.time_of_preparation,req.params.vegan,req.params.vagetarian,req.params.gluten_free,req.params.product_list_and_quantities,req.params.number_of_dishes);
     //or
     // await recipes_utils.createRecipe(req.params.recipe_pic,req.params.recipe_name,req.params.time_of_preparation,req.params.vegan,req.params.vagetarian,req.params.gluten_free,req.params.product_list_and_quantities,req.params.number_of_dishes);
-    res.status(200).send("The Recipe successfully created");
+
+    let recipe_details = {
+      id: req.body.id,
+      title: req.body.title,
+      readyInMinutes: req.body.readyInMinutes,
+      image: req.body.image,
+      popularity: req.body.popularity,
+      vegan: req.body.vegan,
+      vegetarian: req.body.vegetarian,
+      glutenFree: req.body.glutenFree,
+      instructions: req.body.instructions,
+    }
+
+    const recipe = await DButils.execQuery("SELECT id FROM newrecipes");
+    //console.log(users)
+    if (recipe.find((x) => x.id == recipe_details.id))
+      throw { status: 409, message: "id is taken" };
+
+    await DButils.execQuery(
+      `INSERT INTO newrecipes VALUES ('${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
+      '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}')`
+    );
+    res.status(200).send({message: "The Recipe successfully created", success: true});
   } catch(error){
     next(error);
   }
