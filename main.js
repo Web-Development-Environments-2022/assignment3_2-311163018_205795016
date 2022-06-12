@@ -57,12 +57,13 @@ const user = require("./routes/user");
 const recipes = require("./routes/recipes");
 const auth = require("./routes/auth");
 const mainPage = require("./routes/mainPage");
+const about = require("./routes/about");
 
 
 //#region cookie middleware
 app.use(function (req, res, next) {
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users")
+    DButils.execQuery("SELECT * FROM users")
       .then((users) => {
         if (users.find((x) => x.user_id === req.session.user_id)) {
           req.user_id = req.session.user_id;
@@ -85,6 +86,8 @@ app.use("/users", user);
 app.use("/recipes", recipes);
 app.use(auth);
 app.use("/mainPage", mainPage)
+app.use("/about", about)
+
 
 // Default router
 app.use(function (err, req, res, next) {
