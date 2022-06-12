@@ -9,8 +9,8 @@ const recipe_utils = require("./utils/recipes_utils");
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users").then((users) => {
-      if (users.find((x) => x.user_id === req.session.user_id)) {
+    DButils.execQuery("SELECT ID FROM users").then((users) => {
+      if (users.find((x) => x.ID === req.session.user_id)) {
         req.user_id = req.session.user_id;
         next();
       }
@@ -29,10 +29,14 @@ router.use(async function (req, res, next) {
 router.post('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
+    console.log("**********************************************************");
+    console.log(user_id);
+    console.log("**********************************************************");
     const recipe_id = req.body.recipeId;
     await user_utils.markAsFavorite(user_id,recipe_id);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
+    console.log("*************************failed in catch*************************");
     next(error);
   }
 })
@@ -50,7 +54,9 @@ router.get('/favorites', async (req,res,next) => {
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+// recipes_id_array is an array of recipes id seperated by comma (",")), we need to convert it to string' that the reason for this stranger line below ;-) 
+    const favorite_recipes_id_string_by_comma = recipes_id_array.join();
+    const results = await recipe_utils.getRecipesPreview(favorite_recipes_id_string_by_comma);
     res.status(200).send(results);
   } catch(error){
     next(error); 
