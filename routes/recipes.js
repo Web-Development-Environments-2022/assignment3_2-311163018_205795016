@@ -81,6 +81,9 @@ router.post("/createrecipe", async (req,res,next) => {
       `INSERT INTO newrecipes VALUES ('${user_id}','${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
       '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}')`
     );
+    await DButils.execQuery(
+      `INSERT INTO userrecipes VALUES ('${user_id}','${recipe_details.id}')`
+    );
     res.status(200).send({message: "The Recipe successfully created", success: true});
   } catch(error){
     next(error);
