@@ -12,6 +12,12 @@ router.get("/", (req, res) => res.send("im here"));
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+    if(req.session.user_id){
+      const user_id = req.session.user_id;
+      await DButils.execQuery(
+        `INSERT INTO watchedrecipes VALUES ('${user_id}','${recipe.id}')`
+      );
+    }
     res.send(recipe);
   } catch (error) {
     next(error);
@@ -26,6 +32,7 @@ router.get("/:recipeId", async (req, res, next) => {
  router.get("/search/:query_from_user-:number", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipesByQuery(req.params.query_from_user,req.params.number);
+    
     res.send(recipe);
   } catch (error) {
     next(error);
