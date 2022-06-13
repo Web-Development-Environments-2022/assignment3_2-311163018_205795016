@@ -102,10 +102,13 @@ async function getRecipesComplexSearch(input_query,input_number) {
  */
 
 
-async function getRecipesByQuery(query,NumberOfResults) {
+ async function getRecipesByQuery(query,NumberOfResults) {
     let recipe_info = await getRecipesComplexSearch(query,NumberOfResults);
     let { offset, number, results ,totalResults} = recipe_info.data;
-
+    if (results.length == 0) {
+        let str = "No recipes found ";
+        return str;
+    }
     return {
         offset : offset,
         number : number,
