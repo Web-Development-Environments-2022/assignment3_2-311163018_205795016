@@ -10,7 +10,7 @@ const home_utils = require("./utils/mainPage_utils")
 // return three random recipes
 router.get("/", async (req, res, next) => {
     try {
-        const randomRecipes = await home_utils.getRandomRecipes();
+        const randomRecipes = await recipe_utils.getRandomRecipesPreview();//home_utils.getRandomRecipes();
         if(req.session.user_id){
           const user_id = req.session.user_id;
           let my_recipes = {};/**@todo that from the template - but I think its an error because nobody use this var*/
@@ -28,7 +28,7 @@ router.get("/", async (req, res, next) => {
             res.send(results);
           }
           else if(recipes_id_array.length == 0){
-            res.send(randomRecipes.data);
+            res.send(randomRecipes);//res.send(randomRecipes.data);
 
           }
           else{
@@ -41,7 +41,7 @@ router.get("/", async (req, res, next) => {
         }
         else{
 
-          res.send(randomRecipes.data);
+          res.send(randomRecipes);//res.send(randomRecipes.data);
         }
         //res.send(randomRecipes.data);
         //res.status(200).send(results);
