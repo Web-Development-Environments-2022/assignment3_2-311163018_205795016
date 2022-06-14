@@ -29,7 +29,7 @@ router.post("/Register", async (req, res, next) => {
 
 
     //let users = [];
-    const users = await DButils.execQuery("SELECT usersname FROM users");
+    const users = await DButils.execQuery("SELECT username FROM users");
     //console.log(users)
     if (users.find((x) => x.username == user_details.username))
       throw { status: 409, message: "Username taken" };

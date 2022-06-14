@@ -99,4 +99,29 @@ router.get('/favorites', async (req,res,next) => {
 })
 
 
+
+
+/**
+ * This path returns the family recipes that were saved by the logged-in user
+ * 
+ * 
+ * @todo update our API - move this from recipe to uset(on our API!!!)
+ */
+ router.get('/family', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let family_recipes = {};//that from the template - but I think its an error because nobody use this var
+    const recipes_id = await user_utils.getFamilyRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+// recipes_id_array is an array of recipes id seperated by comma (",")), we need to convert it to string' that the reason for this stranger line below ;-) 
+    const family_recipes_id_string_by_comma = recipes_id_array.join();
+    const results = await recipe_utils.getFamilyRecipesPreview(family_recipes_id_string_by_comma,user_id);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+
 module.exports = router;

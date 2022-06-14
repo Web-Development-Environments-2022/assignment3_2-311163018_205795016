@@ -261,6 +261,75 @@ async function getRandomRecipesPreview(keyToSort) {
     return SortByKey(final_recipes_preview_array,keyToSort);
 }
 
+
+/**
+ * make preview to recipes that on OUR DB (in the table newrecipes)
+ * @param {*} recipes_id_arr 
+ * @param {*} keyToSort 
+ * @returns 
+ */
+ async function getFamilyRecipesPreview(recipes_id_arr,user_id,keyToSort) {
+    // let number_of_recipes = recipes_id_arr.length;
+    let recipes_preview_array = [];
+    for (let i=0;i<recipes_id_arr.length;i++) {
+        let recipe_info = await DButils.execQuery(`select * from familyrecipes where (recipe_id='${recipes_id_arr[i]}') AND (user_id='${user_id}')`);
+        //JSON.stringify(recipe_info) - convert "RowDataPacket" to js object
+        let string_obj = JSON.stringify(recipe_info);
+        //JSON.parse(string_obj) convert it to array that in index 0 the row we want exists
+        recipes_preview_array.push(JSON.parse(string_obj)[0]);
+    }
+    final_recipes_preview_array =[];
+
+    recipes_preview_array = recipes_preview_array.filter(function( element ) {
+        return element !== undefined;
+     });
+
+    //console.log(typeof recipes_preview_array)
+    let number_of_recipes = recipes_preview_array.length;
+
+    for (let i=0;i<number_of_recipes; i++) {
+        // let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
+            //not sure if we want to add recipe ID, or maybe its need to be client problem ?
+        try{
+            let { recipe_id, title,recipe_belongs_to,makes_it_in, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree,ingredients,instructions } = recipes_preview_array[i];
+            final_recipes_preview_array.push({
+            recipe_id: recipe_id,
+            title: title,
+            recipe_belongs_to: recipe_belongs_to,
+            makes_it_in: makes_it_in,
+            readyInMinutes: readyInMinutes,
+            image: image,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+            ingredients: ingredients,
+            instructions: instructions,
+        })
+        } catch {
+            let { recipe_id, title,recipe_belongs_to,makes_it_in, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
+            final_recipes_preview_array.push({
+                recipe_id: recipe_id,
+                title: title,
+                readyInMinutes: readyInMinutes,
+                recipe_belongs_to: recipe_belongs_to,
+                makes_it_in: makes_it_in,
+                image: image,
+                popularity: aggregateLikes,
+                vegan: vegan,
+                vegetarian: vegetarian,
+                glutenFree: glutenFree,
+            })
+        }
+
+    }
+    if (keyToSort == null) {
+        return final_recipes_preview_array;
+    }
+    return SortByKey(final_recipes_preview_array,keyToSort);
+}
+
+
 /**
  * function that sort array of object (which represent recipe ) by "readyInMinutes" or by "popularity"
  * @param {*} array_to_sort 
@@ -295,6 +364,6 @@ exports.getRecipesByQuery = getRecipesByQuery;
 exports.getRecipesPreview = getRecipesPreview;
 exports.getMyRecipesPreview = getMyRecipesPreview;
 exports.getRandomRecipesPreview = getRandomRecipesPreview;
-
+exports.getFamilyRecipesPreview = getFamilyRecipesPreview;
 
 
