@@ -24,14 +24,16 @@ router.get("/", async (req, res, next) => {
 
           recipes_id_array = [];
           recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-
+          //remove duplicates recipes
+          let uniqueIds = [...new Set(recipes_id_array)];
+          recipes_id_array = Array.from(uniqueIds);
           if (recipes_id_array.length > 3){
             sliced_arry = recipes_id_array.slice(-3)
-            const latest_recipes_id_string_by_comma = sliced_arry.join();
-            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma));
+            const latest_recipes_id_string_by_comma = sliced_arry.reverse().join();
+            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma,false));
           } else if (recipes_id_array.length != 0){
-            const latest_recipes_id_string_by_comma = recipes_id_array.join();
-            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma));
+            const latest_recipes_id_string_by_comma = recipes_id_array.reverse().join();
+            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma,false));
           } 
         } else {//no user connect
           results.push(recipes_id_array);
