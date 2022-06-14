@@ -77,6 +77,7 @@ router.post("/createrecipe", async (req,res,next) => {
       vegetarian: req.body.vegetarian,
       glutenFree: req.body.glutenFree,
       instructions: req.body.instructions,
+      number_of_dishes: req.body.number_of_dishes
     }
 
     const recipe = await DButils.execQuery("SELECT id FROM newrecipes");
@@ -86,7 +87,7 @@ router.post("/createrecipe", async (req,res,next) => {
 
     await DButils.execQuery(
       `INSERT INTO newrecipes VALUES ('${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
-      '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}')`
+      '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}','${recipe_details.number_of_dishes}')`
     );
     await DButils.execQuery(
       `INSERT INTO userrecipes VALUES ('${user_id}','${recipe_details.id}')`
@@ -130,24 +131,27 @@ router.post("/createrecipe", async (req,res,next) => {
  * 
  * @todo update our API? - maybe we need to move this from recipe to user ???
  */
- router.get('/family', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    let family_recipes = {};/** @todo that from the template - but I think its an error because nobody use this var */
-    const recipes_id = await user_utils.getFamilyRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
-  } catch(error){
-    next(error); 
-  }
-});
 
+
+
+//***************************************************************** */
+//  router.get('/family', async (req,res,next) => {
+//   try{
+//     const user_id = req.session.user_id;
+//     let family_recipes = {};/** @todo that from the template - but I think its an error because nobody use this var */
+//     const recipes_id = await user_utils.getFamilyRecipes(user_id);
+//     let recipes_id_array = [];
+//     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+//     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+//     res.status(200).send(results);
+//   } catch(error){
+//     next(error); 
+//   }
+// });
+//******************************************************************** */
 
 /**
  * 
- * function for developers and private tests, we can check here recipes_utils.getRecipesPreview
  * 
  * e.g http://localhost:3000/recipes/recipes_preview/716411,716429,715000,5665
  * return :
@@ -197,6 +201,7 @@ router.post("/createrecipe", async (req,res,next) => {
 
 
 
+ * function for developers and private tests, we can check here recipes_utils.getRecipesPreview
 
 
 * soryBy can be popularity,readyInMinutes or nothing !!!

@@ -87,16 +87,16 @@ router.get('/favorites', async (req,res,next) => {
  * 
  * @todo update our API - move this from recipe to user(on our API!!!)
  */
- router.post('/myrecipes', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    const recipe_id = req.body.recipe_id;
-    await user_utils.markAsMyRecipe(user_id,recipe_id);
-    res.status(200).send("The Recipe successfully saved in My recipes");
-    } catch(error){
-    next(error);
-  }
-})
+//  router.post('/myrecipes', async (req,res,next) => {
+//   try{
+//     const user_id = req.session.user_id;
+//     const recipe_id = req.body.recipe_id;
+//     await user_utils.markAsMyRecipe(user_id,recipe_id);
+//     res.status(200).send("The Recipe successfully saved in My recipes");
+//     } catch(error){
+//     next(error);
+//   }
+// })
 
 
 

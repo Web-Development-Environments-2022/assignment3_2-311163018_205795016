@@ -52,14 +52,11 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    console.log(req.body.username)
-    //console.log(req.body.username instanceof string)
-    console.log(req.body.password)
+
     const users = await DButils.execQuery("SELECT username FROM users");
-    console.log(users)
     //res.send({ success: true, message: "step1 : in" });
     if (!users.find((x) => x.username == req.body.username))
-      throw { status: 401, message: "Username or Password incorrect1" };
+      throw { status: 401, message: "Username or Password incorrect" };
 
     // check that the password is correct
     const user = (
@@ -68,10 +65,9 @@ router.post("/Login", async (req, res, next) => {
       )
     )[0];
     //res.send({ success: true, message: "step2 : in" });    
-    console.log(user)
-    console.log(bcrypt.compare(req.body.password, user.password))
+
     if (!bcrypt.compareSync(req.body.password, user.password)) {
-      throw { status: 401, message: "Username or Password incorrect2" };
+      throw { status: 401, message: "Username or Password incorrect" };
     }
 
     // Set cookie
