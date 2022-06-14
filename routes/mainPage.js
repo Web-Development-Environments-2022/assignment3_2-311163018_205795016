@@ -7,44 +7,36 @@ const home_utils = require("./utils/mainPage_utils")
 
 
 
-// return three random recipes
+/**
+ * return array of 2 arrays : [[3 random recipes from spooncular API],[last 3(maximum) recipes that the user watched (if there is no user connected - this array will be empty)]]
+ */
 router.get("/", async (req, res, next) => {
     try {
+        //randomRecipes - 3 random recipes from spooncular API
         const randomRecipes = await recipe_utils.getRandomRecipesPreview();//home_utils.getRandomRecipes();
-        if(req.session.user_id){
+        const results = [];
+        results.push(randomRecipes);
+        let recipes_id_array = [];
+        if(req.session.user_id != null){
           const user_id = req.session.user_id;
           let my_recipes = {};/**@todo that from the template - but I think its an error because nobody use this var*/
           const recipes_id = await user_utils.getUserWatchedRecipes(user_id);
 
-          let recipes_id_array = [];
+          recipes_id_array = [];
           recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
 
           if (recipes_id_array.length > 3){
-            // 
             sliced_arry = recipes_id_array.slice(-3)
-            const favorite_recipes_id_string_by_comma = sliced_arry.join();
-            const results = await recipe_utils.getRecipesPreview(favorite_recipes_id_string_by_comma);
-            //const results = await recipe_utils.getRecipesPreview(recipes_id_array.slice(-3));
-            res.send(results);
-          }
-          else if(recipes_id_array.length == 0){
-            res.send(randomRecipes);//res.send(randomRecipes.data);
-
-          }
-          else{
-            const favorite_recipes_id_string_by_comma = recipes_id_array.join();
-            const results = await recipe_utils.getRecipesPreview(favorite_recipes_id_string_by_comma);
-
-  
-            res.status(200).send(results);
-          }
+            const latest_recipes_id_string_by_comma = sliced_arry.join();
+            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma));
+          } else if (recipes_id_array.length != 0){
+            const latest_recipes_id_string_by_comma = recipes_id_array.join();
+            results.push(await recipe_utils.getRecipesPreview(latest_recipes_id_string_by_comma));
+          } 
+        } else {//no user connect
+          results.push(recipes_id_array);
         }
-        else{
-
-          res.send(randomRecipes);//res.send(randomRecipes.data);
-        }
-        //res.send(randomRecipes.data);
-        //res.status(200).send(results);
+        res.status(200).send(results);
       } catch (error) {
         next(error);
       }
