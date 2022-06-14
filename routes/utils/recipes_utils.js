@@ -82,6 +82,7 @@ async function getRecipesComplexSearch(input_query,input_number) {
         params: {
             query: input_query,
             number: input_number,
+            instructionsRequired : true,
             apiKey: process.env.spooncular_apiKey
         }
     });
