@@ -11,6 +11,19 @@ router.get("/", (req, res) => res.send("im here"));
  */
 router.get("/:recipeId", async (req, res, next) => {
   try {
+    if(req.session.user_id){
+      const user_id = req.session.user_id;
+      const recipe_id = req.params.recipeId;
+      const recipes = await DButils.execQuery("SELECT id FROM newrecipes");
+      if (recipes.find((x) => x.id == recipe_id)) {
+        const ids = await DButils.execQuery(`SELECT * FROM userrecipes WHERE user_id=${user_id} AND recipe_id=${recipe_id}`);
+        if (ids != null) {
+          const recipe = await DButils.execQuery(`SELECT * FROM newrecipes WHERE id=${recipe_id}`);
+          res.send(recipe[0]);
+          return;
+        }
+      }
+    }
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
     if(req.session.user_id){
       const user_id = req.session.user_id;
@@ -89,9 +102,13 @@ router.post("/createrecipe", async (req,res,next) => {
       `INSERT INTO newrecipes VALUES ('${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
       '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}','${recipe_details.number_of_dishes}')`
     );
-    await DButils.execQuery(
-      `INSERT INTO userrecipes VALUES ('${user_id}','${recipe_details.id}')`
-    );
+    try{
+      await DButils.execQuery(
+        `INSERT INTO userrecipes VALUES ('${user_id}','${recipe_details.id}')`
+      );
+    } catch {
+      console.log("Recipe created but didn't connect to user")
+    }
     res.status(200).send({message: "The Recipe successfully created", success: true});
   } catch(error){
     next(error);
