@@ -18,6 +18,7 @@ router.get("/:recipeId", async (req, res, next) => {
       if (recipes.find((x) => x.id == recipe_id)) {
         const ids = await DButils.execQuery(`SELECT * FROM userrecipes WHERE user_id=${user_id} AND recipe_id=${recipe_id}`);
         if (ids != null) {
+          
           const recipe = await DButils.execQuery(`SELECT * FROM newrecipes WHERE id=${recipe_id}`);
           res.send(recipe[0]);
           return;
