@@ -43,9 +43,14 @@ router.get("/:recipeId", async (req, res, next) => {
  * This path returns a 5-10/15 (default is 5) recipes by query
  * In the API its "GET/recipes/{query}" - TODO: talk about it
  */
- router.get("/search/:query_from_user-:number", async (req, res, next) => {
+ router.get("/search/:query_from_user-:number-:diet", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRecipesByQuery(req.params.query_from_user,req.params.number);
+    if (req.params.diet==null || req.params.diet=="" || req.params.diet == "Regular") {
+      diet = "";
+    } else {
+      diet = req.params.diet;
+    }
+    const recipe = await recipes_utils.getRecipesByQuery(req.params.query_from_user,req.params.number,diet);
     
     res.send(recipe);
   } catch (error) {

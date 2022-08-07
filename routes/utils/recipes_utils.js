@@ -77,11 +77,22 @@ async function getRecipeDetails(recipe_id) {
  * @param {*} recipes_info
  */
 
-async function getRecipesComplexSearch(input_query,input_number) {
+async function getRecipesComplexSearch(input_query,input_number,diet="") {
+    if (diet == "" || diet == "Regular") {
+        return await axios.get(`${api_domain}/complexSearch`, {
+            params: {
+                query: input_query,
+                number: input_number,
+                instructionsRequired : true,
+                apiKey: process.env.spooncular_apiKey
+            }
+        });        
+    }
     return await axios.get(`${api_domain}/complexSearch`, {
         params: {
             query: input_query,
             number: input_number,
+            diet : diet,
             instructionsRequired : true,
             apiKey: process.env.spooncular_apiKey
         }
@@ -96,8 +107,8 @@ async function getRecipesComplexSearch(input_query,input_number) {
  *  query- type:string	example:pasta	Description: The (natural language) recipe search query.
  * NUBMER- TYPE:number	EXAMPLE:10	Description:The number of expected results (between 1 and 100).
  */
- async function getRecipesByQuery(query,NumberOfResults) {
-    let recipe_info = await getRecipesComplexSearch(query,NumberOfResults);
+ async function getRecipesByQuery(query,NumberOfResults,diet ="") {
+    let recipe_info = await getRecipesComplexSearch(query,NumberOfResults,diet);
     let { offset, number, results ,totalResults} = recipe_info.data;
     if (results.length == 0) {
         let str = "No recipes found ";
