@@ -82,6 +82,24 @@ router.get('/favorites', async (req,res,next) => {
 });
 
 /**
+ * This path returns the recipes that were watched by the logged-in user (only ids !!!)
+ * 
+ * return : list of ids(int)
+ * @todo update our API - move this from recipe to user(on our API!!!)
+ */
+ router.get('/watched', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipes_id = await user_utils.getUserWatchedRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    res.status(200).send(recipes_id);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
  * 
  * 
