@@ -197,7 +197,7 @@ async function getMyRecipesPreview(recipes_id_arr,keyToSort) {
         // let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
             //not sure if we want to add recipe ID, or maybe its need to be client problem ?
         try{
-            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree,instructions } = recipes_preview_array[i];
+            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree,instructions,number_of_dishes,ingredients } = recipes_preview_array[i];
             final_recipes_preview_array.push({
             id: id,
             title: title,
@@ -208,9 +208,11 @@ async function getMyRecipesPreview(recipes_id_arr,keyToSort) {
             vegetarian: vegetarian,
             glutenFree: glutenFree,
             instructions: instructions,
+            number_of_dishes: number_of_dishes,
+            ingredients: ingredients
         })
         } catch {
-            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes_preview_array[i];
+            let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree ,instructions,number_of_dishes,ingredients} = recipes_preview_array[i];
             final_recipes_preview_array.push({
                 id: id,
                 title: title,
@@ -220,6 +222,9 @@ async function getMyRecipesPreview(recipes_id_arr,keyToSort) {
                 vegan: vegan,
                 vegetarian: vegetarian,
                 glutenFree: glutenFree,
+                instructions: instructions,
+                number_of_dishes: number_of_dishes,
+                ingredients: ingredients
             })
         }
 
