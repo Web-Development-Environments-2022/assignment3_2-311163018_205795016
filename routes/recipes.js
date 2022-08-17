@@ -96,7 +96,8 @@ router.post("/createrecipe", async (req,res,next) => {
       vegetarian: req.body.vegetarian,
       glutenFree: req.body.glutenFree,
       instructions: req.body.instructions,
-      number_of_dishes: req.body.number_of_dishes
+      number_of_dishes: req.body.number_of_dishes,
+      ingredients: req.body.ingredients
     }
 
     const recipe = await DButils.execQuery("SELECT id FROM newrecipes");
@@ -106,7 +107,8 @@ router.post("/createrecipe", async (req,res,next) => {
 
     await DButils.execQuery(
       `INSERT INTO newrecipes VALUES ('${recipe_details.id}','${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}',
-      '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}','${recipe_details.number_of_dishes}')`
+      '${recipe_details.popularity}', '${recipe_details.vegan}', '${recipe_details.vegetarian}' , '${recipe_details.glutenFree}', '${recipe_details.instructions}','${recipe_details.number_of_dishes}',
+      '${recipe_details.ingredients}')`
     );
     try{
       await DButils.execQuery(
